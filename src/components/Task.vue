@@ -2,14 +2,22 @@
   <div class="content-wrapper">
     <section>
       <div class="container">
-        <h1 class="ui-title-1">Tasks</h1>
+        <div class="task-list__header">
+          <h1 class="ui-title-1">Movies</h1>
+          <div class="buttons-list ">
+            <p>{{ filter }}</p>
+            <div @click="filter = 'active'" class="button button--round button-default">Aktywne</div>
+            <div @click="filter = 'completed'" class="button button--round button-default">Skończone</div>
+            <div @click="filter = 'all'" class="button button--round button-default">Wszystko</div>
+          </div>
+        </div>
         <div class="task-list">
-          <div v-for="task in tasks" :key="task.id" :class="{ completed: task.completed}" class="task-item">
+          <div v-for="task in tasksFilter" :key="task.id" :class="{ completed: task.completed}" class="task-item">
             <div class="ui-card ui-card--shadow">
               <div class="task-item__info">
                 <div class="task-item__main-i">
                   <span class="ui-label ui-label--light">{{ task.whatWatch }}</span>
-                  <span>Czas całkowity:</span>
+                  <span class="task-item__time">Czas całkowity: {{ task.time }}</span>
                 </div>
                 <span class="button-close"></span>
               </div>
@@ -22,6 +30,15 @@
                 </div>
                 <div class="task-item__body">
                   <p class="ui-text-regular">{{ task.description }}</p>
+                </div>
+                <div class="task-item__footer">
+                  <div class="tag-list">
+                    <div v-for="tag in task.tags" :key="tag.title" class="ui-tag__wrapper">
+                      <div class="ui-tag">
+                        <span class="tag-title">{{ tag.title }}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -36,33 +53,45 @@
 export default {
   data () {
     return {
-      tasks: [
-        {
-          id: 1,
-          title: 'GrowthBusters: Hooked on Growth',
-          description: 'I directed this documentary challenge',
-          whatWatch: 'Film',
-          completed: false,
-          editing: false
-        },
-        {
-          id: 2,
-          title: 'Breaking Bad',
-          description: 'Say my name',
-          whatWatch: 'Serial',
-          completed: false,
-          editing: false
-        }
-      ]
+      filter: 'active'
+    }
+  },
+  computed: {
+    tasksFilter () {
+      if (this.filter === 'active') {
+        return this.$store.getters.taskNotCompleted
+      } else if (this.filter === 'completed') {
+        return this.$store.getters.taskCompleted
+      } else if (this.filter === 'all') {
+        return this.$store.getters.tasks
+      }
+      return this.filter === 'active'
     }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
+.task-list__header
+  display flex
+  justify-content space-between
+  align-items center
+  margin-bottom 30px
+  .button
+    margin-right 8px
+  .ui-title-1
+    margin-bottom 0
 .task-item
   margin-bottom 20px
-  &:last-child
+  .ui-checkbox:checked:before
+    border-color #909399
+  &.completed
+    .ui-title-3,
+    .ui-text-regular,
+    .ui-tag
+    .task-item__time
+      text-decoration line-through
+      color #909399
     margin-bottom 0px
 
 .ui-label

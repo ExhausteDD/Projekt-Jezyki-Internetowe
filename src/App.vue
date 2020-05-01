@@ -32,7 +32,7 @@ export default {
       menuShow: false,
       linkMenu: [
         { title: 'Home', url: '/' },
-        { title: 'Tasks', url: '/task' },
+        { title: 'Movies', url: '/movies' },
         { title: 'Login', url: '/login' },
         { title: 'Registration', url: '/registration' }
       ]

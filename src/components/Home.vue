@@ -43,7 +43,7 @@
         </div>
         <div class="tag-list">
           <div v-for="tag in tags" :key="tag.title" class="ui-tag__wrapper">
-            <div @click="addTagUsed(tag)" :class="{active: tag.use}" class="ui-tag">
+            <div @click="addTagUsed(tag)" :class="{used: tag.use}" class="ui-tag">
               <span class="tag-title">{{ tag.title }}</span>
               <span class="button-close"></span>
             </div>
@@ -65,7 +65,6 @@ export default {
       taskTitle: '',
       taskDescription: '',
       whatWatch: 'Film',
-      taskId: 3,
 
       // Dla czasu całkowitego
       // Film
@@ -79,29 +78,7 @@ export default {
       // Metki
       tagTitle: '',
       tagMenuShow: false,
-      tagsUsed: [],
-      tags: [
-        {
-          title: 'Komedia',
-          use: false
-        },
-        {
-          title: 'Horror',
-          use: false
-        },
-        {
-          title: 'Dramat',
-          use: false
-        },
-        {
-          title: 'Fantastyka',
-          use: false
-        },
-        {
-          title: 'Western',
-          use: false
-        }
-      ]
+      tagsUsed: []
     }
   },
 
@@ -110,13 +87,11 @@ export default {
       if (this.tagTitle === '') {
         return
       }
-      this.tags.push({
+      const tag = {
         title: this.tagTitle,
-        used: false
-      })
-      // const tag = {
-      //   title: this.tagTitle
-      // }
+        use: false
+      }
+      this.$store.dispatch('newTag', tag)
     },
     newTask () { // Metoda do wpisywania danych w input
       // Zabezpieczenie od zapisywania pustych form
@@ -130,30 +105,33 @@ export default {
         time = this.serialTime
       }
       const task = {
-        id: this.taskId,
         title: this.taskTitle,
         description: this.taskDescription,
         whatWatch: this.whatWatch,
         time,
-        tagsUsed: this.tagsUsed,
+        tags: this.tagsUsed,
         completed: false,
         editing: false
       }
+      this.$store.dispatch('newTask', task)
       console.log(task)
 
-      // Resetujemy ID oraz nazwe z opisem w inpucie, wprowadzone dane w metki
-      this.taskId += 1
+      // Resetujemy nazwe z opisem w inpucie oraz wprowadzone dane w metki
       this.taskTitle = ''
       this.taskDescription = ''
       this.tagsUsed = []
+
+      for (let i = 0; i < this.tags.length; i++) { // Po wyslaniu danych metki znowu sa puste
+        this.tags[i].use = false
+      }
     },
 
     addTagUsed (tag) { // Metoda do dodawania metek
       tag.use = !tag.use
       if (tag.use) {
-        this.tagsUsed.push(
-          tag.title
-        )
+        this.tagsUsed.push({
+          title: tag.title
+        })
       } else { // Usuniecie metek
         this.tagsUsed.splice(tag.title, 1)
       }
@@ -162,12 +140,15 @@ export default {
     getHoursAndMinutes (minutes) { // Zaokraglamy minuty w godziny
       const hours = Math.trunc(minutes / 60)
       const min = minutes % 60
-      return hours + ' Hours ' + min + ' Minutes '
+      return hours + ' Godzin ' + min + ' Minut ' // TO DO Popracowan nad odmiana
     }
   },
 
-  computed: { // Liczymy ilosc czasu dla kazdej kategorii
-    filmTime () {
+  computed: {
+    tags () {
+      return this.$store.getters.tags
+    },
+    filmTime () { // Liczymy ilosc czasu dla kazdej kategorii
       const min = (this.filmHours * 60) + (this.filmMinutes * 1)
       return this.getHoursAndMinutes(min)
     },

@@ -14,8 +14,8 @@ const routes = [
     component: Home
   },
   {
-    path: '/task',
-    name: 'task',
+    path: '/movies',
+    name: 'movies',
     component: Task
   },
   {
