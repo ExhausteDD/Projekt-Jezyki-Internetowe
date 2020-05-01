@@ -49,7 +49,6 @@
             </div>
           </div>
         </div>
-        <p>{{ tagsUsed }}</p>
         <div class="button-list">
           <div @click="newTask" class="button button--round button-primary">Wyślij</div>
         </div>

@@ -29,7 +29,7 @@
                   <span class="ui-title-3">{{ task.title }}</span>
                 </div>
                 <div class="task-item__body">
-                  <p class="ui-text-regular">{{ task.description }}</p>
+                  <p class="ui-text-regular body-description">{{ task.description }}</p>
                 </div>
                 <div class="task-item__footer">
                   <div class="tag-list">
@@ -93,6 +93,9 @@ export default {
       text-decoration line-through
       color #909399
     margin-bottom 0px
+.task-item__body
+  .body-description
+    margin-bottom 18px
 
 .ui-label
   margin-right 8px
