@@ -71,7 +71,7 @@ export default {
   methods: {
     onSubmit () {
       this.$v.$touch()
-      if (this.$v.$invalid) {
+      if (this.$v.$invalid) { // Sprawdzanie walidnosci
         this.submitStatus = 'ERROR'
       } else {
         console.log('submit!')
@@ -81,7 +81,7 @@ export default {
         }
         console.log(user)
         this.submitStatus = 'PENDING'
-        setTimeout(() => {
+        setTimeout(() => { // Imitacja wysylania danych na serwer
           this.submitStatus = 'OK'
         }, 500)
       }
@@ -91,12 +91,14 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+// Rozdzielenie ekranu na 2 czesci
 .auth
   display flex
 .auth__banner,
 .auth__form
   width 50%
 
+// Style dla wskazowek walidacyjnych
 .form-item
   .error
     display none
@@ -110,7 +112,9 @@ export default {
 input
   &.error
     border-color #fc5c65
+    animation shake .3s
 
+// Przyciski
 .buttons-list
   text-align right
   margin-bottom 20px

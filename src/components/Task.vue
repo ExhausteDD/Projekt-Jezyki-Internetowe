@@ -5,44 +5,45 @@
         <div class="task-list__header">
           <h1 class="ui-title-1">Movies</h1>
           <div class="buttons-list ">
-            <p>{{ filter }}</p>
             <div @click="filter = 'active'" class="button button--round button-default">Aktywne</div>
             <div @click="filter = 'completed'" class="button button--round button-default">Skończone</div>
             <div @click="filter = 'all'" class="button button--round button-default">Wszystko</div>
           </div>
         </div>
         <div class="task-list">
-          <div v-for="task in tasksFilter" :key="task.id" :class="{ completed: task.completed}" class="task-item">
-            <div class="ui-card ui-card--shadow">
-              <div class="task-item__info">
-                <div class="task-item__main-i">
-                  <span class="ui-label ui-label--light">{{ task.whatWatch }}</span>
-                  <span class="task-item__time">Czas całkowity: {{ task.time }}</span>
-                </div>
-                <span class="button-close"></span>
-              </div>
-              <div class="task-item__content">
-                <div class="task-item__header">
-                  <div class="ui-checkbox-wrapper">
-                    <input v-model="task.completed" class="ui-checkbox" type="checkbox">
+          <transition-group name="taskList">
+            <div v-for="task in tasksFilter" :key="task.id" :class="{ completed: task.completed}" class="task-item">
+              <div class="ui-card ui-card--shadow">
+                <div class="task-item__info">
+                  <div class="task-item__main-i">
+                    <span class="ui-label ui-label--light">{{ task.whatWatch }}</span>
+                    <span class="task-item__time">Czas całkowity: {{ task.time }}</span>
                   </div>
-                  <span class="ui-title-3">{{ task.title }}</span>
+                  <span class="button-close"></span>
                 </div>
-                <div class="task-item__body">
-                  <p class="ui-text-regular body-description">{{ task.description }}</p>
-                </div>
-                <div class="task-item__footer">
-                  <div class="tag-list">
-                    <div v-for="tag in task.tags" :key="tag.title" class="ui-tag__wrapper">
-                      <div class="ui-tag">
-                        <span class="tag-title">{{ tag.title }}</span>
+                <div class="task-item__content">
+                  <div class="task-item__header">
+                    <div class="ui-checkbox-wrapper">
+                      <input v-model="task.completed" class="ui-checkbox" type="checkbox">
+                    </div>
+                    <span class="ui-title-3">{{ task.title }}</span>
+                  </div>
+                  <div class="task-item__body">
+                    <p class="ui-text-regular body-description">{{ task.description }}</p>
+                  </div>
+                  <div class="task-item__footer">
+                    <div class="tag-list">
+                      <div v-for="tag in task.tags" :key="tag.title" class="ui-tag__wrapper">
+                        <div class="ui-tag">
+                          <span class="tag-title">{{ tag.title }}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </transition-group>
         </div>
       </div>
     </section>
@@ -56,7 +57,7 @@ export default {
       filter: 'active'
     }
   },
-  computed: {
+  computed: { // Sprawdzenie wartosci filtru
     tasksFilter () {
       if (this.filter === 'active') {
         return this.$store.getters.taskNotCompleted
@@ -65,13 +66,14 @@ export default {
       } else if (this.filter === 'all') {
         return this.$store.getters.tasks
       }
-      return this.filter === 'active'
+      return this.filter === 'active' // Dla wyswietlania najpierw listy aktywnych filmow i tp
     }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
+// Lista przycisków
 .task-list__header
   display flex
   justify-content space-between
@@ -81,6 +83,8 @@ export default {
     margin-right 8px
   .ui-title-1
     margin-bottom 0
+
+// Style dla kategorii
 .task-item
   margin-bottom 20px
   .ui-checkbox:checked:before
@@ -116,4 +120,11 @@ export default {
     margin-right 8px
   .ui-title-3
     margin-bottom 0
+
+// Lista metek
+.task-item__footer
+  .ui-tag__wrapper
+    margin-right 10px
+    &:last-child
+      margin-right 0px
 </style>

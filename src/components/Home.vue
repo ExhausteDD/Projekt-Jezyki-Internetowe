@@ -3,64 +3,77 @@
     <section>
       <div class="container">
         <h1 class="ui-title-1">Home</h1>
-        <input v-model="taskTitle" @keyup.enter="newTask" type="text" placeholder="Co będziesz oglądać">
-        <textarea v-model="taskDescription" @keyup.enter="newTask" type="text" ></textarea>
-        <div class="option-list">
-          <input v-model='whatWatch' type="radio" id="radioFilm" value="Film" class="what-watch--radio ui-checkbox">
-          <label for="radioFilm">Film</label>
-          <input v-model='whatWatch' type="radio" id="radioSerial" value="Serial" class="what-watch--radio ui-checkbox">
-          <label for="radioSerial">Serial</label>
-        </div>
-        <div class="total-time">
-          <div v-if="whatWatch === 'Film'" class="total-time__film">
-            <span class="time-title">Godziny</span>
-            <input v-model="filmHours" type="number" class="time-input">
-            <span class="time-title">Minuty</span>
-            <input v-model="filmMinutes" type="number" class="time-input">
-            <p> {{ filmTime }} </p>
+        <form @submit.prevent="onSubmit">
+          <div :class="{ errorInput: $v.taskTitle.$error }" class="form-item">
+            <input v-model="taskTitle" @change="$v.taskTitle.$touch()" :class="{ error: $v.taskTitle.$error }" type="text" placeholder="Co będziesz oglądać">
+            <div class="error" v-if="!$v.taskTitle.required">Pole wymagane</div>
           </div>
-          <div v-if="whatWatch === 'Serial'" class="total-time__serial">
-            <span class="time-title">Ile sezonów?</span>
-            <input v-model="serialSeason" type="number" class="time-input">
-            <span class="time-title">Ile odcinków?</span>
-            <input v-model="serialSeries" type="number" class="time-input">
-            <span class="time-title">Ile trwa jeden odcinek? (w minutach)</span>
-            <input v-model="serialSeriesMinutes" type="number" class="time-input">
-            <p> {{ serialTime }} </p>
+          <div class="form-item">
+            <textarea v-model="taskDescription" @keyup.enter="onSubmit" type="text" placeholder="Opis"></textarea>
           </div>
-        </div>
-        <div class="tag-list tag-list--add">
-          <div @click="tagMenuShow = !tagMenuShow" class="ui-tag__wrapper">
-            <div class="ui-tag">
-              <span class="tag-title">Dodaj nowy</span>
-              <span :class="{ active: !tagMenuShow }" class="button-close"></span>
+          <div class="option-list">
+            <input v-model='whatWatch' type="radio" id="radioFilm" value="Film" class="what-watch--radio ui-checkbox">
+            <label for="radioFilm">Film</label>
+            <input v-model='whatWatch' type="radio" id="radioSerial" value="Serial" class="what-watch--radio ui-checkbox">
+            <label for="radioSerial">Serial</label>
+          </div>
+          <div class="total-time">
+            <div v-if="whatWatch === 'Film'" class="total-time__film">
+              <span class="time-title">Godziny</span>
+              <input v-model="filmHours" type="number" class="time-input">
+              <span class="time-title">Minuty</span>
+              <input v-model="filmMinutes" type="number" class="time-input">
+              <p> {{ filmTime }} </p>
+            </div>
+            <div v-if="whatWatch === 'Serial'" class="total-time__serial">
+              <span class="time-title">Ile sezonów?</span>
+              <input v-model="serialSeason" type="number" class="time-input">
+              <span class="time-title">Ile odcinków?</span>
+              <input v-model="serialSeries" type="number" class="time-input">
+              <span class="time-title">Ile trwa jeden odcinek? (w minutach)</span>
+              <input v-model="serialSeriesMinutes" type="number" class="time-input">
+              <p> {{ serialTime }} </p>
             </div>
           </div>
-        </div>
-        <div v-if="tagMenuShow" class="tag-list tag-list--menu">
-          <input v-model="tagTitle" @keyup.enter="newTag" type="text" placeholder="Nowy tag" class="tag-add--input">
-          <div @click="newTag" class="button button-default">Wyślij</div>
-        </div>
-        <div class="tag-list">
-          <div v-for="tag in tags" :key="tag.title" class="ui-tag__wrapper">
-            <div @click="addTagUsed(tag)" :class="{used: tag.use}" class="ui-tag">
-              <span class="tag-title">{{ tag.title }}</span>
-              <span class="button-close"></span>
+          <div class="tag-list tag-list--add">
+            <div @click="tagMenuShow = !tagMenuShow" class="ui-tag__wrapper">
+              <div class="ui-tag">
+                <span class="tag-title">Dodaj nowy</span>
+                <span :class="{ active: !tagMenuShow }" class="button-close"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="button-list">
-          <div @click="newTask" class="button button--round button-primary">Wyślij</div>
-        </div>
+          <transition name="fade">
+            <div v-if="tagMenuShow" class="tag-list tag-list--menu">
+              <input v-model="tagTitle" @keyup.enter="newTag" type="text" placeholder="Nowy tag" class="tag-add--input">
+              <div @click="newTag" class="button button-default">Wyślij</div>
+            </div>
+          </transition>
+          <div class="tag-list">
+            <transition-group enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
+              <div v-for="tag in tags" :key="tag.title" class="ui-tag__wrapper">
+                <div @click="addTagUsed(tag)" :class="{used: tag.use}" class="ui-tag">
+                  <span class="tag-title">{{ tag.title }}</span>
+                  <span class="button-close"></span>
+                </div>
+              </div>
+            </transition-group>
+          </div>
+          <div class="button-list">
+            <div type="submit" @click="onSubmit" :disabled="submitStatus === 'PENDING'" class="button button--round button-primary">Wyślij</div>
+          </div>
+        </form>
       </div>
     </section>
   </div>
 </template>
 
 <script>
+import { required } from 'vuelidate/lib/validators'
 export default {
   data () {
     return {
+      submitStatus: null,
       taskTitle: '',
       taskDescription: '',
       whatWatch: 'Film',
@@ -81,8 +94,14 @@ export default {
     }
   },
 
+  validations: {
+    taskTitle: {
+      required
+    }
+  },
+
   methods: {
-    newTag () {
+    newTag () { // Dodanie nowej metki
       if (this.tagTitle === '') {
         return
       }
@@ -91,41 +110,63 @@ export default {
         use: false
       }
       this.$store.dispatch('newTag', tag)
+      // Resetujemy input w metce
+      this.tagTitle = ''
     },
-    newTask () { // Metoda do wpisywania danych w input
-      // Zabezpieczenie od zapisywania pustych form
-      if (this.taskTitle === '') {
-        return
-      }
-      let time // Wyswietlamy czas
-      if (this.whatWatch === 'Film') {
-        time = this.filmTime
+
+    onSubmit () {
+      this.$v.$touch()
+
+      if (this.$v.$invalid) {
+        console.log('ERROR')
+        this.submitStatus = 'ERROR'
       } else {
-        time = this.serialTime
-      }
-      const task = {
-        title: this.taskTitle,
-        description: this.taskDescription,
-        whatWatch: this.whatWatch,
-        time,
-        tags: this.tagsUsed,
-        completed: false,
-        editing: false
-      }
-      this.$store.dispatch('newTask', task)
-      console.log(task)
+        // Validacja
+        console.log('SEND')
+        this.submitStatus = 'PENDING'
 
-      // Resetujemy nazwe z opisem w inpucie oraz wprowadzone dane w metki
-      this.taskTitle = ''
-      this.taskDescription = ''
-      this.tagsUsed = []
+        // Imitacja wyslania na serwer
+        setTimeout(() => {
+          this.submitStatus = 'OK'
+        }, 500)
 
-      for (let i = 0; i < this.tags.length; i++) { // Po wyslaniu danych metki znowu sa puste
-        this.tags[i].use = false
+        // Czas
+        let time
+        if (this.whatWatch === 'Film') {
+          time = this.filmTime
+        } else {
+          time = this.serialTime
+        }
+
+        // Task
+        const task = {
+          title: this.taskTitle,
+          description: this.taskDescription,
+          whatWatch: this.whatWatch,
+          time,
+          tags: this.tagsUsed,
+          completed: false,
+          editing: false
+        }
+        this.$store.dispatch('newTask', task)
+
+        // Resetowanie
+        this.taskTitle = ''
+        this.taskDescription = ''
+        // Resetowanie $v (validate)
+        this.$v.$reset()
+
+        // Resetowanie dla metek
+        this.tagMenuShow = false
+        this.tagsUsed = []
+        this.tagTitle = ''
+        for (let i = 0; i < this.tags.length; i++) {
+          this.tags[i].use = false
+        }
       }
     },
 
-    addTagUsed (tag) { // Metoda do dodawania metek
+    addTagUsed (tag) { // Metoda do wyslania metek
       tag.use = !tag.use
       if (tag.use) {
         this.tagsUsed.push({
@@ -226,4 +267,19 @@ export default {
 .button-list
   display flex
   justify-content flex-end
+
+// Style dla validacji form
+.form-item
+  .error
+    display none
+    margin-bottom 8px
+    font-size 13.4px
+    color #fc5c65
+  &.errorInput
+    .error
+      display block
+input
+  &.error
+    border-color #fc5c65
+    animation shake .3s
 </style>
