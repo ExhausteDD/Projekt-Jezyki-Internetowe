@@ -20,11 +20,15 @@
                 <div class="error" v-if="!$v.password.minLength">Hasło musi zawierac minimalnie {{ $v.password.$params.minLength.min }} znaków.</div>
               </div>
               <div class="buttons-list">
-                <button :disabled="submitStatus === 'PENDING'" type="submit" class="button button-primary">Loguj</button>
+                <button type="submit" class="button button-primary">
+                  <span v-if="loading">Loading...</span>
+                  <span v-else>Loguj</span>
+                </button>
               </div>
               <div class="buttons-list buttons-list--info">
+                <p class="typo__p" v-if="submitStatus === 'OK'">Zalogowano</p>
                 <p class="typo__p" v-if="submitStatus === 'ERROR'">Proszę prawidłowo wypełnić pola.</p>
-                <p class="typo__p" v-if="submitStatus === 'PENDING'">Wysyłanie...</p>
+                <p class="typo__p" v-else="">{{ submitStatus }}</p>
               </div>
               <div class="buttons-list buttons-list--info">
                 <span>Nie jesteś zarejestrowany?
@@ -66,17 +70,25 @@ export default {
       if (this.$v.$invalid) { // Sprawdzanie walidnosci
         this.submitStatus = 'ERROR'
       } else {
-        console.log('Login!')
         const user = {
           email: this.email,
           password: this.password
         }
-        console.log(user)
-        this.submitStatus = 'PENDING'
-        setTimeout(() => { // Imitacja wysylania danych na serwer
-          this.submitStatus = 'OK'
-        }, 500)
+        this.$store.dispatch('loginUser', user) // Logowanie usera i przekierowywanie na strona glowna
+          .then(() => {
+            console.log('LOGIN!')
+            this.submitStatus = 'OK'
+            this.$router.push('/')
+          })
+          .catch(err => { //  w razie bledu komunikat o pomylce
+            this.submitStatus = err.message
+          })
       }
+    }
+  },
+  computed: {
+    loading () {
+      return this.$store.getters.loading
     }
   }
 }

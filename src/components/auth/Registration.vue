@@ -4,7 +4,7 @@
       <div class="container">
         <div class="auth">
           <div class="auth__banner">
-            <h1 class="ui-title-2">Hello banner</h1>
+            <h1 class="ui-title-2">Film library</h1>
           </div>
           <div class="auth__form">
             <span class="ui-title-2">Registration</span>
@@ -24,12 +24,15 @@
                 <div class="error" v-if="!$v.repeatPassword.sameAsPassword">Hasła nie są identyczne</div>
               </div>
               <div class="buttons-list">
-                <button :disabled="submitStatus === 'PENDING'" type="submit" class="button button-primary">Rejestruj</button>
+                <button type="submit" class="button button-primary">
+                  <span v-if="loading">Loading...</span>
+                  <span v-else="">Registration</span>
+                </button>
               </div>
               <div class="buttons-list buttons-list--info">
                 <p class="typo__p" v-if="submitStatus === 'OK'">Dziękujemy za rejestracje!</p>
                 <p class="typo__p" v-if="submitStatus === 'ERROR'">Proszę prawidłowo wypełnić pola.</p>
-                <p class="typo__p" v-if="submitStatus === 'PENDING'">Wysyłanie...</p>
+                <p class="typo__p" v-else="">{{ submitStatus }}</p>
               </div>
               <div class="buttons-list buttons-list--info">
                 <span>Jesteś zarejestrowany?
@@ -74,17 +77,25 @@ export default {
       if (this.$v.$invalid) { // Sprawdzanie walidnosci
         this.submitStatus = 'ERROR'
       } else {
-        console.log('submit!')
         const user = {
           email: this.email,
           password: this.password
         }
-        console.log(user)
-        this.submitStatus = 'PENDING'
-        setTimeout(() => { // Imitacja wysylania danych na serwer
-          this.submitStatus = 'OK'
-        }, 500)
+        this.$store.dispatch('registerUser', user) // Rejestracja usera i po pomyslnej rejestracji logowanie i przekierowywanie do strony glownej
+          .then(() => {
+            console.log('REGISTERED')
+            this.submitStatus = 'OK'
+            this.$router.push('/')
+          })
+          .catch(err => {
+            this.submitStatus = err.message //  Komunikat o pomylce
+          })
       }
+    }
+  },
+  computed: {
+    loading () {
+      return this.$store.getters.loading
     }
   }
 }
@@ -94,9 +105,15 @@ export default {
 // Rozdzielenie ekranu na 2 czesci
 .auth
   display flex
+  flex-wrap wrap
 .auth__banner,
 .auth__form
   width 50%
+  @media screen and (max-width 768px)
+    width 100%
+    margin-bottom 30px
+    &:last-child
+      margin-bottom 0px
 
 // Style dla wskazowek walidacyjnych
 .form-item
