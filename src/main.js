@@ -10,7 +10,6 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
 
-
 Vue.use(
   Vuelidate,
   Uimini
@@ -40,6 +39,7 @@ new Vue({
       if (user) {
         this.$store.dispatch('loggedUser', user)
       }
+      this.$store.dispatch('loadTasks') // Dla wyswieltania listy filmow odrazu po zalogowaniu
     })
   }
 }).$mount('#app')

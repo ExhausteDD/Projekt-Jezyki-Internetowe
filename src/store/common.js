@@ -1,4 +1,3 @@
-// 
 export default {
   state: {
     loading: false,
@@ -27,7 +26,7 @@ export default {
     }
   },
   getters: {
-    loading (state) { // otrzymanie statusu ladowania 
+    loading (state) { // otrzymanie statusu ladowania
       return state.loading
     },
     error (state) { // komunikat o pomylce

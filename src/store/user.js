@@ -43,6 +43,10 @@ export default {
     loggedUser ({ commit }, payload) { // Przechwytywanie id usera dla mozliwosci utrzymywania sesji po zalogowaniu
       commit('setUser', new User(payload.uid))
       console.log(payload.uid)
+    },
+    logoutUser ({ commit }) {
+      firebase.auth().signOut()
+      commit('setUser', null)
     }
   },
   getters: {

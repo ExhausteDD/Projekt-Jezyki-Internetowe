@@ -13,7 +13,10 @@
             <div :class="{ active: menuShow }" class="navbar-list__wrapper">
               <ul class="navbar-list">
                 <li class="navbar-item" v-for="link in linkMenu" :key="link.title" @click="menuShow = false">
-                  <router-link :to="`${link.url}`" class="navbar-lonk">{{ link.title }}</router-link>
+                  <router-link :to="`${link.url}`" class="navbar-link">{{ link.title }}</router-link>
+                </li>
+                <li class="navbar-item" v-if="checkUser" @click="logOut">
+                  <span class="navbar-link">Logout</span>
                 </li>
               </ul>
             </div>
@@ -29,11 +32,28 @@
 export default {
   data () {
     return {
-      menuShow: false,
-      linkMenu: [
-        { title: 'Home', url: '/' },
-        { title: 'Movies', url: '/movies' },
-        { title: 'Login', url: '/login' },
+      menuShow: false
+    }
+  },
+  methods: {
+    logOut () { // przy wyogowaniu przekirowywanie na strone logowania
+      this.$store.dispatch('logoutUser')
+      this.$router.push('/login')
+    }
+  },
+  computed: {
+    checkUser () { // Sprawdzamy czy user jest zalogowany
+      return this.$store.getters.checkUser
+    },
+    linkMenu () {
+      if (this.checkUser) { // jezeli zalogowany to ma dostep do stron ponizszych
+        return [
+          { title: 'Home', url: '/' },
+          { title: 'Movies', url: '/movies' }
+        ]
+      }
+      return [
+        { title: 'Login', url: '/login' }, // jak nie to lece na rejestracje
         { title: 'Registration', url: '/registration' }
       ]
     }
