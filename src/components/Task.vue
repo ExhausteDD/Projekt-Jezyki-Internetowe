@@ -19,14 +19,14 @@
                     <span class="ui-label ui-label--light">{{ task.whatWatch }}</span>
                     <span class="task-item__time">Czas całkowity: {{ task.time }}</span>
                   </div>
-                  <span class="button-close"></span>
+                  <span @click="deleteTask(task.id)" class="button-close"></span>
                 </div>
                 <div class="task-item__content">
                   <div class="task-item__header">
                     <div class="ui-checkbox-wrapper">
                       <input v-model="task.completed" class="ui-checkbox" type="checkbox">
                     </div>
-                    <span class="ui-title-3">{{ task.title }}</span>
+                    <span class="ui-title-2">{{ task.title }}</span>
                   </div>
                   <div class="task-item__body">
                     <p class="ui-text-regular body-description">{{ task.description }}</p>
@@ -38,6 +38,9 @@
                           <span class="tag-title">{{ tag.title }}</span>
                         </div>
                       </div>
+                      <div class="buttons-list">
+                        <div @click="taskEdit(task.id, task.title, task.description)" class="button button--round button-default">Edytuj</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -46,7 +49,26 @@
           </transition-group>
         </div>
       </div>
+      <div v-if="editing" :class="{active: editing}" class="ui-messageBox__wrapper">
+        <div class="ui-messageBox fadeInDown">
+          <div class="ui-messageBox__header">
+            <span class="messageBox-title">{{ titleEditing }}</span>
+            <span @click="cancelTaskEdit" class="button-close ui-messageBox-close"></span>
+          </div>
+          <div class="ui-messageBox__content">
+            <p>Nazwa</p>
+            <input v-model="titleEditing" type="text">
+            <p>Opis</p>
+            <textarea v-model="descrEditing" type="text"></textarea>
+          </div>
+          <div class="ui-messageBox__footer">
+            <div @click="cancelTaskEdit" class="button button-light ui-messageBox-cancel">Wróć</div>
+            <div @click="finishTaskEdit" class="button button-primary ui-messageBox-ok">OK</div>
+          </div>
+        </div>
+      </div>
     </section>
+
   </div>
 </template>
 
@@ -54,7 +76,40 @@
 export default {
   data () {
     return {
-      filter: 'active'
+      filter: 'active',
+      editing: false,
+      titleEditing: '',
+      descrEditing: '',
+      taskId: null
+    }
+  },
+  methods: {
+    taskEdit (id, title, description) { // Mozliwosc edytowania tresci
+      this.editing = !this.editing
+      this.taskId = id
+      this.titleEditing = title
+      this.descrEditing = description
+    },
+    cancelTaskEdit () {
+      this.editing = !this.editing
+      // Resetujemy dane
+      this.taskId = null
+      this.titleEditing = ''
+      this.descrEditing = ''
+    },
+    finishTaskEdit () { // Po skonczeniu edytowania dane edytuja sie na stronie i w BD
+      this.$store.dispatch('editTask', {
+        id: this.taskId,
+        title: this.titleEditing,
+        description: this.descrEditing
+      })
+      this.editing = !this.editing
+    },
+    deleteTask (id) { // Usuwanie tasku i odrazu usuwanie go ze strony
+      this.$store.dispatch('deleteTask', id)
+        .then(() => {
+          this.$store.dispatch('loadTasks')
+        })
     }
   },
   computed: { // Sprawdzenie wartosci filtru
@@ -90,7 +145,7 @@ export default {
   .ui-checkbox:checked:before
     border-color #909399
   &.completed
-    .ui-title-3,
+    .ui-title-2,
     .ui-text-regular,
     .ui-tag
     .task-item__time
@@ -127,4 +182,23 @@ export default {
     margin-right 10px
     &:last-child
       margin-right 0px
+
+.tag-list
+  margin-bottom 20px
+
+.task-item__footer
+  .buttons-list
+    text-align right
+
+.buttons-list
+  .button
+    margin-right 12px
+    &:last-child
+      margin-right 0px
+
+.ui-messageBox__wrapper
+  &.active
+   display flex
+  .button-light
+   margin-right 8px
 </style>

@@ -98,6 +98,7 @@ export default {
 // Rozdzielenie ekranu na 2 czesci
 .auth
   display flex
+  justify-content space-between
 .auth__banner,
 .auth__form
   width 50%

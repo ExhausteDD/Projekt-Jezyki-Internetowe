@@ -1,41 +1,93 @@
+import firebase from 'firebase/app'
+
+import Tag from './tag_help'
+
 export default {
   state: {
-    tags: [
-      {
-        title: 'Komedia',
-        use: false
-      },
-      {
-        title: 'Horror',
-        use: false
-      },
-      {
-        title: 'Dramat',
-        use: false
-      },
-      {
-        title: 'Fantastyka',
-        use: false
-      },
-      {
-        title: 'Western',
-        use: false
-      }
-    ]
+    tags: []
   },
   mutations: {
+    loadTags (state, payload) {
+      state.tags = payload
+    },
     newTag (state, payload) {
       state.tags.push(payload)
     }
   },
   actions: {
-    newTag ({ commit }, payload) {
-      commit('newTag', payload)
+    async loadTags ({ commit }) {
+      commit('clearError')
+      commit('setLoading', true)
+      try {
+        // Wyciagamy metki z bazy
+        const tag = await firebase.database().ref('tags').once('value')
+        const tags = tag.val()
+        const tagsArray = []
+        // Wyciagamy tags key (id)
+        Object.keys(tags).forEach(key => {
+          const t = tags[key]
+          tagsArray.push(
+            new Tag(
+              t.title,
+              t.use,
+              t.user,
+              key
+            )
+          )
+        })
+        commit('loadTags', tagsArray)
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setLoading', false)
+        commit('setError', error.message)
+        throw error
+      }
+    },
+    // Dodajemy nowe metki
+    async newTag ({ commit, getters }, payload) {
+      commit('clearError')
+      commit('setLoading', true)
+      try {
+        const newTag = new Tag(
+          payload.title,
+          payload.use,
+          getters.user.id
+        )
+        // Wysylamy nowa metke
+        const tag = await firebase.database().ref('tags').push(newTag)
+        commit('newTag', {
+          ...newTag,
+          id: tag.key
+        })
+
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setLoading', false)
+        commit('setError', error.message)
+        throw error
+      }
+    },
+    // Usuwamy metke (button)
+    async deleteTag ({ commit }, id) {
+      commit('clearError')
+      commit('setLoading', true)
+      try {
+        await firebase.database().ref('tags').child(id).remove()
+
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setLoading', false)
+        commit('setError', error.message)
+        throw error
+      }
     }
   },
   getters: {
-    tags (state) {
-      return state.tags
+    // Otrzymujemy wszystkie metki usera
+    tags (state, getters) {
+      return state.tags.filter(tag => {
+        return tag.user === getters.user.id
+      })
     }
   }
 }

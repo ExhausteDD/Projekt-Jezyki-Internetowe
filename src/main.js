@@ -40,6 +40,7 @@ new Vue({
         this.$store.dispatch('loggedUser', user)
       }
       this.$store.dispatch('loadTasks') // Dla wyswieltania listy filmow odrazu po zalogowaniu
+      this.$store.dispatch('loadTags')
     })
   }
 }).$mount('#app')

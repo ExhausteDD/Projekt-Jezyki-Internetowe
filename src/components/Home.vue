@@ -51,10 +51,10 @@
           </transition>
           <div class="tag-list">
             <transition-group enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
-              <div v-for="tag in tags" :key="tag.title" class="ui-tag__wrapper">
+              <div v-for="tag in tags" :key="tag.id" class="ui-tag__wrapper">
                 <div @click="addTagUsed(tag)" :class="{used: tag.use}" class="ui-tag">
                   <span class="tag-title">{{ tag.title }}</span>
-                  <span class="button-close"></span>
+                  <span @click="deleteTag(tag.id)" class="button-close"></span>
                 </div>
               </div>
             </transition-group>
@@ -112,6 +112,12 @@ export default {
       this.$store.dispatch('newTag', tag)
       // Resetujemy input w metce
       this.tagTitle = ''
+    },
+    deleteTag (id) { // Usuwamy metke
+      this.$store.dispatch('deleteTag', id)
+        .then(() => {
+          this.$store.dispatch('loadTags')
+        })
     },
 
     onSubmit () {
@@ -180,7 +186,7 @@ export default {
     getHoursAndMinutes (minutes) { // Zaokraglamy minuty w godziny
       const hours = Math.trunc(minutes / 60)
       const min = minutes % 60
-      return hours + ' Godzin ' + min + ' Minut ' // TO DO Popracowan nad odmiana
+      return `${hours} Hours ${min} Minutes` // TO DO Popracowac nad odmiana
     }
   },
 

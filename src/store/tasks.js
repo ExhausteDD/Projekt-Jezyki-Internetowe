@@ -11,10 +11,17 @@ export default {
     },
     newTask (state, payload) {
       state.tasks.push(payload)
+    },
+    editTask (state, { id, title, description }) {
+      const task = state.tasks.find(t => {
+        return t.id === id
+      })
+      task.title = title
+      task.description = description
     }
   },
   actions: {
-    async loadTasks ({ commit }, payload) {
+    async loadTasks ({ commit }) {
       commit('clearError')
       commit('setLoading', true)
       try {
@@ -70,19 +77,49 @@ export default {
         commit('setError', error.message)
         throw error
       }
+    },
+    async editTask ({ commit }, { id, title, description }) {
+      commit('clearError')
+      commit('setLoading', true)
+      try {
+        await firebase.database().ref('task').child(id).update({
+          title,
+          description
+        })
+        commit('editTask', { id, title, description })
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setLoading', false)
+        commit('setError', error.message)
+        throw error
+      }
+    },
+    async deleteTask ({ commit }, id) {
+      commit('clearError')
+      commit('setLoading', true)
+      try {
+        await firebase.database().ref('task').child(id).remove()
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setLoading', false)
+        commit('setError', error.message)
+        throw error
+      }
     }
   },
   getters: {
-    tasks (state) {
-      return state.tasks
-    },
-    taskCompleted (state) {
+    tasks (state, getters) {
       return state.tasks.filter(task => {
+        return task.user === getters.user.id
+      })
+    },
+    taskCompleted (state, getters) {
+      return getters.tasks.filter(task => {
         return task.completed
       })
     },
-    taskNotCompleted (state) {
-      return state.tasks.filter(task => {
+    taskNotCompleted (state, getters) {
+      return getters.tasks.filter(task => {
         return task.completed === false
       })
     }
