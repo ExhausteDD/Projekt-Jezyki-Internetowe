@@ -38,9 +38,9 @@ new Vue({
     firebase.auth().onAuthStateChanged(user => { // Utrzymywanie sesji dla zalogowanego uzytkownika
       if (user) {
         this.$store.dispatch('loggedUser', user)
+        this.$store.dispatch('loadTasks') // Dla wyswieltania listy filmow odrazu po zalogowaniu
+        this.$store.dispatch('loadTags')
       }
-      this.$store.dispatch('loadTasks') // Dla wyswieltania listy filmow odrazu po zalogowaniu
-      this.$store.dispatch('loadTags')
     })
   }
 }).$mount('#app')

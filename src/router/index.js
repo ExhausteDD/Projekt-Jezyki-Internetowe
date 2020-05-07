@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import store from '@/store'
 
 import Home from '@/components/Home'
-import Task from '@/components/Task'
+import Library from '@/components/Task'
 import Login from '@/components/auth/Login'
 import Registration from '@/components/auth/Registration'
 
@@ -16,17 +16,12 @@ const routes = [
     component: Home,
     beforeEnter (to, from, next) {
       store.getters.checkUser ? next() : next('/login')
-      // if (store.getters.checkUser) {
-      //   next()
-      // } else {
-      //   next('/login')
-      // }
     }
   },
   {
-    path: '/movies',
-    name: 'movies',
-    component: Task,
+    path: '/library',
+    name: 'library',
+    component: Library,
     beforeEnter (to, from, next) {
       store.getters.checkUser ? next() : next('/login')
     }

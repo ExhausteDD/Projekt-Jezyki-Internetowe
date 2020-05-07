@@ -20,7 +20,7 @@
                 <div class="error" v-if="!$v.password.minLength">Hasło musi zawierac minimalnie {{ $v.password.$params.minLength.min }} znaków.</div>
               </div>
               <div class="buttons-list">
-                <button type="submit" class="button button-primary">
+                <button :class="{ 'button--disable': $v.$invalid }" type="submit" class="button button-primary">
                   <span v-if="loading">Loading...</span>
                   <span v-else>Loguj</span>
                 </button>
@@ -98,10 +98,19 @@ export default {
 // Rozdzielenie ekranu na 2 czesci
 .auth
   display flex
+  flex-wrap wrap
   justify-content space-between
 .auth__banner,
 .auth__form
   width 50%
+  @media screen and (max-width 768px)
+    width 100%
+    margin-bottom 30px
+    &:last-child
+      margin-bottom 0px
+
+.auth__form
+  max-width 400px
 
 // Style dla wskazowek walidacyjnych
 .form-item

@@ -3,7 +3,7 @@
     <section>
       <div class="container">
         <div class="task-list__header">
-          <h1 class="ui-title-1">Movies</h1>
+          <h1 class="ui-title-1">Library</h1>
           <div class="buttons-list ">
             <div @click="filter = 'active'" class="button button--round button-default">Aktywne</div>
             <div @click="filter = 'completed'" class="button button--round button-default">Skończone</div>
@@ -16,7 +16,7 @@
               <div class="ui-card ui-card--shadow">
                 <div class="task-item__info">
                   <div class="task-item__main-i">
-                    <span class="ui-label ui-label--light">{{ task.whatWatch }}</span>
+                    <span :class="[{ 'ui-label--primary': !task.completed }, { 'ui-label--light': task.completed  }]" class="ui-label ui-label--light">{{ task.whatWatch }}</span>
                     <span class="task-item__time">Czas całkowity: {{ task.time }}</span>
                   </div>
                   <span @click="deleteTask(task.id)" class="button-close"></span>
@@ -24,7 +24,7 @@
                 <div class="task-item__content">
                   <div class="task-item__header">
                     <div class="ui-checkbox-wrapper">
-                      <input v-model="task.completed" class="ui-checkbox" type="checkbox">
+                      <input v-model="task.completed" @click="taskCompleted(task.id, task.completed)" class="ui-checkbox" type="checkbox">
                     </div>
                     <span class="ui-title-2">{{ task.title }}</span>
                   </div>
@@ -40,6 +40,10 @@
                       </div>
                       <div class="buttons-list">
                         <div @click="taskEdit(task.id, task.title, task.description)" class="button button--round button-default">Edytuj</div>
+                        <div @click="taskCompleted(task.id, task.completed)" :class="[{ 'button-primary': !task.completed }, { 'button-light': task.completed  }]" class="button button--round">
+                          <span v-if="task.completed">Wróć</span>
+                          <span v-else="">OK</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -49,17 +53,17 @@
           </transition-group>
         </div>
       </div>
-      <div v-if="editing" :class="{active: editing}" class="ui-messageBox__wrapper">
-        <div class="ui-messageBox fadeInDown">
+      <div v-if="editingPopup" @click="cancelTaskEdit" :class="{active: editingPopup}" class="ui-messageBox__wrapper">
+        <div @click.stop="" class="ui-messageBox fadeInDown">
           <div class="ui-messageBox__header">
             <span class="messageBox-title">{{ titleEditing }}</span>
             <span @click="cancelTaskEdit" class="button-close ui-messageBox-close"></span>
           </div>
           <div class="ui-messageBox__content">
             <p>Nazwa</p>
-            <input v-model="titleEditing" type="text">
+            <input v-model="titleEditing" @keyup.esc="cancelTaskEdit" type="text">
             <p>Opis</p>
-            <textarea v-model="descrEditing" type="text"></textarea>
+            <textarea v-model="descrEditing" @keyup.esc="cancelTaskEdit" type="text"></textarea>
           </div>
           <div class="ui-messageBox__footer">
             <div @click="cancelTaskEdit" class="button button-light ui-messageBox-cancel">Wróć</div>
@@ -77,21 +81,31 @@ export default {
   data () {
     return {
       filter: 'active',
-      editing: false,
+      editingPopup: false,
       titleEditing: '',
       descrEditing: '',
       taskId: null
     }
   },
   methods: {
+    taskCompleted (id, completed) { // Mozliwosc przenoszenia do skonczonych jednym kliekiem
+      completed ? completed = false : completed = true
+      this.$store.dispatch('completedTask', {
+        id,
+        completed
+      })
+        .then(() => {
+          console.log(completed)
+        })
+    },
     taskEdit (id, title, description) { // Mozliwosc edytowania tresci
-      this.editing = !this.editing
+      this.editingPopup = !this.editingPopup
       this.taskId = id
       this.titleEditing = title
       this.descrEditing = description
     },
     cancelTaskEdit () {
-      this.editing = !this.editing
+      this.editingPopup = !this.editingPopup
       // Resetujemy dane
       this.taskId = null
       this.titleEditing = ''
@@ -103,7 +117,7 @@ export default {
         title: this.titleEditing,
         description: this.descrEditing
       })
-      this.editing = !this.editing
+      this.editingPopup = !this.editingPopup
     },
     deleteTask (id) { // Usuwanie tasku i odrazu usuwanie go ze strony
       this.$store.dispatch('deleteTask', id)

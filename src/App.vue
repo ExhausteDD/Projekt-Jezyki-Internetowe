@@ -49,7 +49,7 @@ export default {
       if (this.checkUser) { // jezeli zalogowany to ma dostep do stron ponizszych
         return [
           { title: 'Home', url: '/' },
-          { title: 'Movies', url: '/movies' }
+          { title: 'Library', url: '/library' }
         ]
       }
       return [

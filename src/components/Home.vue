@@ -186,7 +186,7 @@ export default {
     getHoursAndMinutes (minutes) { // Zaokraglamy minuty w godziny
       const hours = Math.trunc(minutes / 60)
       const min = minutes % 60
-      return `${hours} Hours ${min} Minutes` // TO DO Popracowac nad odmiana
+      return `${hours} Godzin ${min} Minut` // TO DO Popracowac nad odmiana
     }
   },
 
