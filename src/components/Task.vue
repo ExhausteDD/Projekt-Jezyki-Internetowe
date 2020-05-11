@@ -17,7 +17,7 @@
                 <div class="task-item__info">
                   <div class="task-item__main-i">
                     <span :class="[{ 'ui-label--primary': !task.completed }, { 'ui-label--light': task.completed  }]" class="ui-label ui-label--light">{{ task.whatWatch }}</span>
-                    <span class="task-item__time">Czas całkowity: {{ task.time }}</span>
+                    <span class="task-item__time">Czas całkowity - {{ task.time }}</span>
                   </div>
                   <span @click="deleteTask(task.id)" class="button-close"></span>
                 </div>

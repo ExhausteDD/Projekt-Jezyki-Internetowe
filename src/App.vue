@@ -5,11 +5,6 @@
         <div class="container">
           <div class="navbar-content">
             <router-link to="/" class="header-logo">Film library</router-link>
-            <div @click="menuShow = !menuShow" :class="{ active: menuShow }" class="button-burger">
-              <span class="line line-1"></span>
-              <span class="line line-2"></span>
-              <span class="line line-3"></span>
-            </div>
             <div :class="{ active: menuShow }" class="navbar-list__wrapper">
               <ul class="navbar-list">
                 <li class="navbar-item" v-for="link in linkMenu" :key="link.title" @click="menuShow = false">
@@ -63,4 +58,24 @@ export default {
 
 <style lang="stylus">
 @import './assets/stylus/main.styl';
+body
+  color #fffffe
+  background-color #232946
+  .navbar
+    background-color #232946
+    border-bottom: 2px solid #121629
+  .navbar-content
+    .header-logo
+      font-weight bold
+      color #fffffe
+      font-size 22px
+      &:hover
+        font-size 24px
+        transition .7s
+    .navbar-item
+      a,span
+        color #fffffe
+        &:hover
+          font-size 19.5px
+          transition .7s
 </style>

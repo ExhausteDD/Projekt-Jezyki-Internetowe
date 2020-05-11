@@ -131,11 +131,6 @@ export default {
         console.log('SEND')
         this.submitStatus = 'PENDING'
 
-        // Imitacja wyslania na serwer
-        setTimeout(() => {
-          this.submitStatus = 'OK'
-        }, 500)
-
         // Czas
         let time
         if (this.whatWatch === 'Film') {
@@ -186,7 +181,7 @@ export default {
     getHoursAndMinutes (minutes) { // Zaokraglamy minuty w godziny
       const hours = Math.trunc(minutes / 60)
       const min = minutes % 60
-      return `${hours} Godzin ${min} Minut` // TO DO Popracowac nad odmiana
+      return `Godzin: ${hours} Minut: ${min}`
     }
   },
 
@@ -207,6 +202,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.ui-title-1
+  color #fffffe
+
 // Ustawienia wyboru
 .option-list
   display flex
@@ -214,6 +212,11 @@ export default {
   margin-bottom 20px
   .what-watch--radio
     margin-right 12px
+  .ui-checkbox
+    &:after
+      top 0
+      background: #d4d8f0
+      border 2px solid #121629
   input
     margin-bottom 0px
   label
@@ -243,6 +246,11 @@ export default {
 // Metki
 .tag-list
   margin-bottom 20px
+  .button-default
+    border-radius 0.9em
+    background-color #eebbc3
+    color #232946
+    border 3px solid #121629
 
 .ui-tag__wrapper
   margin-right 18px
@@ -251,16 +259,22 @@ export default {
     margin-right 0px
 
 .ui-tag
+  border 3px solid #121629
+  color #232946
+  background-color #eebbc3
+  cursor pointer
   .button-close
     &.active
       transform rotate(45deg)
   &.used
-    background-color #444ce0
+    background-color #121629
     color #fff
+    border 2px solid #fffffe
+    transition .5s
     .button-close
       &:before,
       &:after
-        background-color #fff
+        background-color #fffffe
 
 .tag-list--menu
   display flex
@@ -273,7 +287,18 @@ export default {
 .button-list
   display flex
   justify-content flex-end
+  .button
+    background-color #eebbc3
+    color #232946
+    border 3px solid #121629
 
+input
+    background-color #232946
+    border 2px solid #121629
+    color #fffffe
+    &::placeholder
+      color #eebbc3
+      font-family Montserrat
 // Style dla validacji form
 .form-item
   .error
@@ -284,8 +309,15 @@ export default {
   &.errorInput
     .error
       display block
-input
-  &.error
-    border-color #fc5c65
-    animation shake .3s
+  input
+    &.error
+      border-color #fc5c65
+      animation shake .3s
+textarea
+    background-color #232946
+    border 2px solid #121629
+    color #fffffe
+    &::placeholder
+      color #eebbc3
+      font-family Montserrat
 </style>
