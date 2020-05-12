@@ -18,6 +18,7 @@
             <label for="radioSerial">Serial</label>
           </div>
           <div class="total-time">
+            <p class="ui-text-regular">Wpisz ile to trwa</p>
             <div v-if="whatWatch === 'Film'" class="total-time__film">
               <span class="time-title">Godziny</span>
               <input v-model="filmHours" type="number" class="time-input">
@@ -38,7 +39,7 @@
           <div class="tag-list tag-list--add">
             <div @click="tagMenuShow = !tagMenuShow" class="ui-tag__wrapper">
               <div class="ui-tag">
-                <span class="tag-title">Dodaj nowy</span>
+                <span class="tag-title">Dodaj nową metkę</span>
                 <span :class="{ active: !tagMenuShow }" class="button-close"></span>
               </div>
             </div>
@@ -50,6 +51,7 @@
             </div>
           </transition>
           <div class="tag-list">
+            <p class="ui-text-regular">Spis twoich metek:</p>
             <transition-group enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
               <div v-for="tag in tags" :key="tag.id" class="ui-tag__wrapper">
                 <div @click="addTagUsed(tag)" :class="{used: tag.use}" class="ui-tag">
@@ -60,7 +62,7 @@
             </transition-group>
           </div>
           <div class="button-list">
-            <div type="submit" @click="onSubmit" :disabled="submitStatus === 'PENDING'" class="button button--round button-primary">Wyślij</div>
+            <div type="submit" @click="onSubmit" :disabled="submitStatus === 'PENDING'" class="button button--round">Wyślij</div>
           </div>
         </form>
       </div>
@@ -243,10 +245,15 @@ export default {
     margin-bottom 28px
     margin-right 10px
 
+.ui-text-regular
+    color #fffffe
+    margin-bottom 10px
+
 // Metki
 .tag-list
   margin-bottom 20px
   .button-default
+    font-weight bold
     border-radius 0.9em
     background-color #eebbc3
     color #232946
@@ -260,6 +267,7 @@ export default {
 
 .ui-tag
   border 3px solid #121629
+  font-weight bold
   color #232946
   background-color #eebbc3
   cursor pointer
@@ -288,6 +296,7 @@ export default {
   display flex
   justify-content flex-end
   .button
+    font-weight bold
     background-color #eebbc3
     color #232946
     border 3px solid #121629
@@ -299,6 +308,7 @@ input
     &::placeholder
       color #eebbc3
       font-family Montserrat
+
 // Style dla validacji form
 .form-item
   .error

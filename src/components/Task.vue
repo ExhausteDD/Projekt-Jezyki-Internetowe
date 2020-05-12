@@ -13,7 +13,7 @@
         <div class="task-list">
           <transition-group name="taskList">
             <div v-for="task in tasksFilter" :key="task.id" :class="{ completed: task.completed}" class="task-item">
-              <div class="ui-card ui-card--shadow">
+              <div class="ui-card">
                 <div class="task-item__info">
                   <div class="task-item__main-i">
                     <span :class="[{ 'ui-label--primary': !task.completed }, { 'ui-label--light': task.completed  }]" class="ui-label ui-label--light">{{ task.whatWatch }}</span>
@@ -39,10 +39,10 @@
                         </div>
                       </div>
                       <div class="buttons-list">
-                        <div @click="taskEdit(task.id, task.title, task.description)" class="button button--round button-default">Edytuj</div>
-                        <div @click="taskCompleted(task.id, task.completed)" :class="[{ 'button-primary': !task.completed }, { 'button-light': task.completed  }]" class="button button--round">
+                        <div @click="taskEdit(task.id, task.title, task.description)" class="button button--round">Edytuj</div>
+                        <div @click="taskCompleted(task.id, task.completed)" class="button button--round">
                           <span v-if="task.completed">Wróć</span>
-                          <span v-else="">OK</span>
+                          <span v-else="">Zakończ</span>
                         </div>
                       </div>
                     </div>
@@ -150,12 +150,32 @@ export default {
   margin-bottom 30px
   .button
     margin-right 8px
+    font-weight bold
+    background-color #eebbc3
+    color #232946
+    border 3px solid #121629
   .ui-title-1
     margin-bottom 0
+    color #fffffe
 
 // Style dla kategorii
 .task-item
   margin-bottom 20px
+  .ui-tag
+    font-weight bold
+    color #fffffe
+    border 2px solid #dcdfe6
+  .ui-card
+    background-color #232946
+    border 3px solid #121629
+    color #fffffe
+    .ui-title-2
+      color #fffffe
+  .ui-checkbox
+    &:after
+      top 0
+      background: #d4d8f0
+      border 2px solid #121629
   .ui-checkbox:checked:before
     border-color #909399
   &.completed
@@ -165,22 +185,27 @@ export default {
     .task-item__time
       text-decoration line-through
       color #909399
-    margin-bottom 0px
+    margin-bottom 20px
 .task-item__body
   .body-description
     margin-bottom 18px
-
-.ui-label
-  margin-right 8px
+    color #fffffe
 
 .task-item__info
   display flex
   align-items center
   justify-content space-between
   margin-bottom 20px
+  .ui-label
+    margin-right 8px
+    background-color #eebbc3
+    font-weight bold
   .button-close
-    width 20px
-    height 20px
+    width 25px
+    height 25px
+    &:after,
+    &:before
+      height 2px
 .task-item__header
   display flex
   align-items center
@@ -207,6 +232,10 @@ export default {
 .buttons-list
   .button
     margin-right 12px
+    font-weight: bold;
+    background-color #eebbc3
+    color #232946;
+    border 3px solid #121629
     &:last-child
       margin-right 0px
 
@@ -215,4 +244,20 @@ export default {
    display flex
   .button-light
    margin-right 8px
+  .ui-messageBox
+    color #121629
+    background-color #b8c1ec
+    font-weight bold
+    .ui-messageBox__content
+      input,
+      textarea
+        border 2px solid #121629
+    .ui-messageBox__footer
+      .button
+        border-radius: 1.2em;
+        padding: 0.48em 1.2em;
+        font-weight: bold;
+        background-color #eebbc3
+        color #232946;
+        border 3px solid #121629
 </style>

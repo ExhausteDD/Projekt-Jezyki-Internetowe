@@ -61,6 +61,10 @@ export default {
 body
   color #fffffe
   background-color #232946
+header
+  top 0
+  position sticky
+  z-index 2
   .navbar
     background-color #232946
     border-bottom: 2px solid #121629
@@ -75,6 +79,7 @@ body
     .navbar-item
       a,span
         color #fffffe
+        font-weight bold
         &:hover
           font-size 19.5px
           transition .7s
