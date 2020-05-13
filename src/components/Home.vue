@@ -29,7 +29,7 @@
             <div v-if="whatWatch === 'Serial'" class="total-time__serial">
               <span class="time-title">Ile sezonów?</span>
               <input v-model="serialSeason" type="number" class="time-input">
-              <span class="time-title">Ile odcinków?</span>
+              <span class="time-title">Ile odcinków? (w jednym sezonie)</span>
               <input v-model="serialSeries" type="number" class="time-input">
               <span class="time-title">Ile trwa jeden odcinek? (w minutach)</span>
               <input v-model="serialSeriesMinutes" type="number" class="time-input">
@@ -215,6 +215,11 @@ export default {
   .what-watch--radio
     margin-right 12px
   .ui-checkbox
+    transition .7s
+    &:hover
+      box-shadow 0px 4px 10px 2px rgba(white, 0.2)
+    &:focus
+      box-shadow none
     &:after
       top 0
       background: #d4d8f0
@@ -249,6 +254,10 @@ export default {
     color #fffffe
     margin-bottom 10px
 
+.button-close
+  &:before,
+  &:after
+    height 2px
 // Metki
 .tag-list
   margin-bottom 20px
@@ -258,6 +267,9 @@ export default {
     background-color #eebbc3
     color #232946
     border 3px solid #121629
+    transition all .7s
+    &:hover
+      border-color #fffffe
 
 .ui-tag__wrapper
   margin-right 18px
@@ -271,6 +283,9 @@ export default {
   color #232946
   background-color #eebbc3
   cursor pointer
+  transition .7s
+  &:hover
+    border-color #fffffe
   .button-close
     &.active
       transform rotate(45deg)
@@ -278,7 +293,6 @@ export default {
     background-color #121629
     color #fff
     border 2px solid #fffffe
-    transition .5s
     .button-close
       &:before,
       &:after
@@ -300,14 +314,21 @@ export default {
     background-color #eebbc3
     color #232946
     border 3px solid #121629
+    transition all .7s
+    &:hover
+      border-color #fffffe
 
-input
+input,
+textarea
     background-color #232946
     border 2px solid #121629
     color #fffffe
+    transition .7s
     &::placeholder
       color #eebbc3
       font-family Montserrat
+    &:focus
+      box-shadow 0px 4px 10px 2px rgba(white, 0.2)
 
 // Style dla validacji form
 .form-item
@@ -323,11 +344,4 @@ input
     &.error
       border-color #fc5c65
       animation shake .3s
-textarea
-    background-color #232946
-    border 2px solid #121629
-    color #fffffe
-    &::placeholder
-      color #eebbc3
-      font-family Montserrat
 </style>

@@ -4,7 +4,7 @@
       <div class="container">
         <div class="auth">
           <div class="auth__banner">
-            <h1 class="ui-title-2">Film library</h1>
+            <img src="https://images.pexels.com/photos/1040158/pexels-photo-1040158.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1920&w=1280" alt="auth banner">
           </div>
           <div class="auth__form">
             <span class="ui-title-2">Registration</span>
@@ -102,6 +102,14 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.content-wrapper
+  min-height auto
+
+.ui-title-2
+  color #fffffe
+
+.auth__banner
+  box-shadow 0px 4px 10px 2px rgba(white, 0.2)
 // Rozdzielenie ekranu na 2 czesci
 .auth
   display flex
@@ -131,18 +139,44 @@ export default {
       display block
 
 input
+  background-color #232946
+  border 2px solid #121629
+  color #fffffe
+  transition .7s
+  &::placeholder
+    color #eebbc3
+    font-family Montserrat
   &.error
     border-color #fc5c65
     animation shake .3s
+  &:focus
+    box-shadow 0px 4px 10px 2px rgba(white, 0.2)
 
 // Przyciski
 .buttons-list
   text-align right
   margin-bottom 20px
+  .button
+    font-family inherit
+    font-weight bold
+    background-color #eebbc3
+    color #232946
+    border 3px solid #121629
+    border-radius 9em
+    transition all .7s
+    &:hover
+      border-color #fffffe
+  .button--disable
+    opacity 0.3
   &.buttons-list--info
     text-align center
     &:last-child
       margin-bottom 0px
+
 a
-  color #444ce0
+  color #fffffe
+  font-weight bold
+  transition .7s
+  &:hover
+    color #eebbc3
 </style>

@@ -154,6 +154,9 @@ export default {
     background-color #eebbc3
     color #232946
     border 3px solid #121629
+    transition all .7s
+    &:hover
+      border-color #fffffe
   .ui-title-1
     margin-bottom 0
     color #fffffe
@@ -169,6 +172,9 @@ export default {
     background-color #232946
     border 3px solid #121629
     color #fffffe
+    transition box-shadow .7s
+    &:hover
+      box-shadow 0px 4px 10px 2px rgba(white, 0.2)
     .ui-title-2
       color #fffffe
   .ui-checkbox
@@ -201,8 +207,6 @@ export default {
     background-color #eebbc3
     font-weight bold
   .button-close
-    width 25px
-    height 25px
     &:after,
     &:before
       height 2px
@@ -236,6 +240,9 @@ export default {
     background-color #eebbc3
     color #232946;
     border 3px solid #121629
+    transition all .7s
+    &:hover
+      border-color #fffffe
     &:last-child
       margin-right 0px
 
@@ -245,12 +252,13 @@ export default {
   .button-light
    margin-right 8px
   .ui-messageBox
-    color #121629
-    background-color #b8c1ec
+    color #fffffe
+    background-color #232946
     font-weight bold
     .ui-messageBox__content
       input,
       textarea
+        color #fffffe
         border 2px solid #121629
     .ui-messageBox__footer
       .button
@@ -260,4 +268,7 @@ export default {
         background-color #eebbc3
         color #232946;
         border 3px solid #121629
+        transition all .7s
+        &:hover
+          border-color #fffffe
 </style>

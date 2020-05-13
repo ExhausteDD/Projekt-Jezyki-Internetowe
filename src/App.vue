@@ -73,14 +73,14 @@ header
       font-weight bold
       color #fffffe
       font-size 22px
+      transition font-size .7s
       &:hover
         font-size 24px
-        transition .7s
     .navbar-item
       a,span
         color #fffffe
         font-weight bold
+        transition font-size .7s
         &:hover
-          font-size 19.5px
-          transition .7s
+          font-size 20px
 </style>
