@@ -76,7 +76,6 @@ export default {
         }
         this.$store.dispatch('loginUser', user) // Logowanie usera i przekierowywanie na strona glowna
           .then(() => {
-            console.log('LOGIN!')
             this.submitStatus = 'OK'
             this.$router.push('/')
           })

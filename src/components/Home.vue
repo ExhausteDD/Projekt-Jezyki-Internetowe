@@ -46,7 +46,7 @@
           </div>
           <transition name="fade">
             <div v-if="tagMenuShow" class="tag-list tag-list--menu">
-              <input v-model="tagTitle" @keyup.enter="newTag" type="text" placeholder="Nowy tag" class="tag-add--input">
+              <input v-model="tagTitle" @keyup.enter="newTag" type="text" placeholder="Nowa metka" class="tag-add--input">
               <div @click="newTag" class="button button-default">Wyślij</div>
             </div>
           </transition>
@@ -126,11 +126,9 @@ export default {
       this.$v.$touch()
 
       if (this.$v.$invalid) {
-        console.log('ERROR')
         this.submitStatus = 'ERROR'
       } else {
         // Validacja
-        console.log('SEND')
         this.submitStatus = 'PENDING'
 
         // Czas

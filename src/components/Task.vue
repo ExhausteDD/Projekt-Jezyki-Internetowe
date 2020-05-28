@@ -94,9 +94,6 @@ export default {
         id,
         completed
       })
-        .then(() => {
-          console.log(completed)
-        })
     },
     taskEdit (id, title, description) { // Mozliwosc edytowania tresci
       this.editingPopup = !this.editingPopup

@@ -83,7 +83,6 @@ export default {
         }
         this.$store.dispatch('registerUser', user) // Rejestracja usera i po pomyslnej rejestracji logowanie i przekierowywanie do strony glownej
           .then(() => {
-            console.log('REGISTERED')
             this.submitStatus = 'OK'
             this.$router.push('/')
           })
